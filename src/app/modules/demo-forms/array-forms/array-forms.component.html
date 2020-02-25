@@ -1,0 +1,112 @@
+<div class="mat-display-1">FormArray</div>
+
+<mat-card class="card-800">
+
+  <mat-card-header>
+    <mat-card-title>
+      Dynamic control using FormArray()
+    </mat-card-title>
+    <mat-card-subtitle>
+      Use FormArray to add dynamic (0, 1, 2...) number of FormControls or FormGroups.
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+      <div class="mat-elevation-z2 form-group">
+        <mat-form-field>
+          <mat-label>First Name</mat-label>
+            <input matInput type="text" formControlName="firstName" placeholder="Your first name" required>
+        </mat-form-field>
+
+        &nbsp;&nbsp;
+
+        <mat-form-field>
+        <mat-label>Last Name</mat-label>
+          <input matInput type="text" formControlName="lastName" placeholder="Your last name" required>
+        </mat-form-field>
+      </div>
+
+      <br>
+
+      <div formGroupName="address" class="mat-elevation-z2 form-group">
+        <mat-form-field class="wide">
+          <mat-label>Street address</mat-label>
+          <input matInput type="text" formControlName="street" placeholder="Your street address">
+        </mat-form-field>
+
+        <p></p>
+
+        <mat-form-field>
+          <mat-label>City</mat-label>
+          <input matInput type="text" formControlName="city" placeholder="Your city">
+        </mat-form-field>
+
+        &nbsp;&nbsp;
+
+        <mat-form-field class="narrow">
+          <mat-label>State</mat-label>
+          <input matInput type="text" formControlName="state" placeholder="Your state">
+        </mat-form-field>
+
+        &nbsp;&nbsp;
+
+        <mat-form-field class="narrow">
+          <mat-label>ZIP code</mat-label>
+          <input matInput type="text" formControlName="zip" placeholder="Your ZIP code">
+        </mat-form-field>
+
+      </div>
+      <br>
+
+      <!-- Family member form array -->
+      <div formArrayName="familyMembers" class="mat-elevation-z2 form-group">
+
+        <div class="comment">Use *ngFor to loop through getter familyMemberForms.controls; *ngFor="let x of familyMemberForms.controls; let i=index"<br>
+          Use <span class="comment-highlight">[formGroupName]="i"</span> to assign the current formGroup to the current div.<br>
+          i also serves as argument to removeFamilyMember() function.<br><span class="comment-highlight">Use formArray.controls</span>
+          even if formArray is an array of formGroups. There is only formArray.controls property; there's no formArray.groups property.
+        </div>
+
+        <br>
+
+        <div class="mat-h1">Family members &nbsp;&nbsp; <button mat-raised-button color="accent" (click)="addFamilyMember()">Add family member</button></div>
+
+        <div *ngFor="let x of familyMemberForms.controls; let i=index" [formGroupName]="i">
+
+          <mat-form-field>
+            <mat-label>Relation</mat-label>
+            <input matInput type="text" formControlName="relation" placeholder="Relation to you">
+          </mat-form-field>
+
+          &nbsp;&nbsp;
+
+          <mat-form-field>
+            <mat-label>First name</mat-label>
+            <input matInput type="text" formControlName="firstName" placeholder="Family's first name">
+          </mat-form-field>
+
+          &nbsp;&nbsp;
+
+          <mat-form-field>
+            <mat-label>Last name</mat-label>
+            <input matInput type="text" formControlName="lastName" placeholder="Family's last name">
+          </mat-form-field>
+
+          &nbsp;&nbsp;
+
+          <button mat-raised-button color="accent" (click)="removeFamilyMember(i)">Remove family member</button>
+
+        </div>
+
+      </div>
+
+      <br>
+      <button mat-raised-button color="accent" type="submit" [disabled]="!myForm.valid">Submit</button>
+
+    </form>
+
+  </mat-card-content>
+
+</mat-card>
+

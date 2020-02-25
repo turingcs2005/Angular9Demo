@@ -1,0 +1,36 @@
+<div class="mat-display-1">HTTP calls</div>
+
+<div class="comment">
+  Simple API call to consume data from remote service:
+  <ul>
+    <li>Create an interface (Person) for consumption of json data.</li>
+    <li>Create a service returning an Observable of type Observable&#60;Person&#91;&#93;&#62; via http.get() method.</li>
+    <li>Create an component. Inject data service. </li>
+    <li>There are two ways to consume the returned Observable:
+      <ul>
+        <li>Directly consume Observable in template using async pipe. (Observable | async | json). Unsubscription is automatic.</li>
+        <li>Subscribe to Observable to pass data to component via constructor. Use '?' in template.
+          This offers much more flexibility that comes with class, such as calling class method.</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<button mat-raised-button color="accent" (click)="getPeople()">API call</button>
+
+<br><br>
+
+<div *ngIf="people$">
+  <div class="comment">Consumption via Observable and async pipe, which automatically takes care of unsubscription.</div>
+  {{ people$ | async | json}}
+</div>
+
+<br>
+
+<div *ngIf="people$" class="comment">Consumption via component property (people}, where Observable is subscribed to pass data to component property (people).</div>
+<div *ngFor="let x of people; let i=index">
+  {{i}}: {{x?.name}} <br>
+  {{x?.greet()}} <br><br>
+</div>
+
+

@@ -1,0 +1,79 @@
+<div class="mat-display-1">Form validation</div>
+
+<mat-card class="card-800">
+
+  <mat-card-header>
+    <mat-card-title>
+      Validating user inputs (synchronous) using Validators
+    </mat-card-title>
+    <mat-card-subtitle>
+      To validator:
+      <ul>
+        <li>Create a bunch of getters as handles on those FormControls.</li>
+        <li>Use mat-error with *ngIf for displaying error messages.</li>
+        <li>controlName.valid && controlName.touched as condition for displaying error message.</li>
+        <li>controlName.errors?.min && controlName.touched for value too low. Use controlName.errors.min.actual to access user's invalid input.</li>
+        <li>Similarly, controlName.errors?minlength & controlName.touched for string not meeting minimal length.</li>
+        <li>Use mat-hint to give user hint.</li>
+      </ul>
+      Sample validators:
+      <ul>
+        <li>required: has to input some value in 'Name' field</li>
+        <li>email: has to conform to email address format</li>
+        <li>regular expression: has to start with letters 'RXW' followed by 3 digits.</li>
+        <li>min and max values for numeric field</li>
+        <li>max length and min length</li>
+      </ul>
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+      <div class="mat-elevation-z2 form-group">
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+            <input matInput type="text" formControlName="name" placeholder="Your name" required>
+        </mat-form-field>
+
+        &nbsp;&nbsp;
+
+        <mat-form-field>
+        <mat-label>Email</mat-label>
+          <input matInput type="text" formControlName="email" placeholder="Your email" required>
+          <mat-error *ngIf="email.invalid && email.touched">Your email doesn't look right...</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>ID</mat-label>
+            <input matInput type="text" formControlName="ID" placeholder="Your ID" required>
+            <mat-hint>Your ID must begin with uppercase letters 'RXW' followed by exactly 3 digits.</mat-hint>
+        </mat-form-field>
+
+        <br><br>
+
+        <mat-form-field>
+          <mat-label>Age</mat-label>
+            <input matInput type="number" formControlName="age" placeholder="Your age">
+            <mat-error *ngIf="age.errors?.min && age.touched">Sorry, but {{ age.errors.min.actual }} are too young to use this app.</mat-error>
+            <mat-error *ngIf="age.errors?.max && age.touched">Sorry, but {{ age.errors.max.actual }} you are too old to use this app.</mat-error>
+        </mat-form-field>
+
+        &nbsp;&nbsp;
+
+        <mat-form-field>
+        <mat-label>ZIP code</mat-label>
+          <input matInput type="text" formControlName="ZIP" placeholder="Your ZIP code">
+          <mat-error *ngIf="ZIP.errors?.minlength && ZIP.touched">Sorry, insufficient digits for a ZIP code.</mat-error>
+          <mat-error *ngIf="ZIP.errors?.maxlength && ZIP.touched">Sorry, too many digits for a ZIP code.</mat-error>
+        </mat-form-field>
+
+      </div>
+
+      <br>
+      <div class="comment">Submitted data are logged to the console. (press F12 on Google Chrome to toggle browser console)</div>
+      <button mat-raised-button color="accent" type="submit" [disabled]="!myForm.valid">Submit</button>
+
+    </form>
+  </mat-card-content>
+
+</mat-card>

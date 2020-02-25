@@ -1,0 +1,21 @@
+<mat-toolbar color="primary">
+  <mat-icon [matMenuTriggerFor]="mainMenu">menu</mat-icon>
+  <div>Angular 9 demo</div>
+  <mat-icon [routerLink]="['/about']">help</mat-icon>
+</mat-toolbar>
+
+<mat-menu #mainMenu="matMenu">
+  <button mat-menu-item [routerLink]="['/']"><mat-icon>home</mat-icon></button>
+  <button mat-menu-item [matMenuTriggerFor]="formsMenu">Reactive forms</button>
+  <button mat-menu-item [routerLink]="['/material-table']">Material table</button>
+  <button mat-menu-item [routerLink]="['/http-calls']">HTTP calls</button>
+</mat-menu>
+
+<mat-menu #formsMenu="matMenu">
+  <button mat-menu-item [routerLink]="['/forms/basic-forms']">Basic forms</button>
+  <button mat-menu-item [routerLink]="['/forms/builder-forms']">Form builder</button>
+  <button mat-menu-item [routerLink]="['/forms/array-forms']">Form Array</button>
+  <button mat-menu-item [routerLink]="['/forms/form-validation']">Form Validation</button>
+</mat-menu>
+
+

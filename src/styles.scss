@@ -1,1 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.margin {
+  margin: 10px;
+}
+
+.card-800 {
+  max-width: 800px;
+}
+
+.wide {
+  width: 80%;
+}
+
+.narrow {
+  width: 10%;
+}
+
+.comment {
+  color: tan;
+}
+
+.comment-highlight {
+  color: darkgoldenrod;
+}
+
+.form-group {
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.beige-background {
+  background-color: beige;
+}

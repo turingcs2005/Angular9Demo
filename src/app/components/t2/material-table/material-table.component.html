@@ -1,0 +1,52 @@
+<div class="mat-display-1">Material table</div>
+
+<div class="comment">
+  Material tables can be very fancy, with pagination, filtering and sorting utilities. Below are steps to implement pagination:
+  <ul>
+    <li>Import MatPaginator and MatTableDataSource classes into component. Set [pageSize] in mat-paginator.</li>
+    <li>Implement mat-table and mat-paginator in template.</li>
+    <li>Link dataSource and paginator in component.
+      <ul>
+        <li>Use ViewChild() to access mat-paginator. @ViewChild(MatPaginator, &#123;tatic: true&#125;) paginator: MatPaginator; Note that the second argument needs to be true.</li>
+        <li>Create a MatTableDataSource instance. (Standard HTML5 tables do not have paginator property.)</li>
+        <li>Assign paginator to table in onInit(): this.dataSource.paginator = this.paginator</li>
+        <li>In .scss, use &#123;display: flex&#125; on mat-paginator component, so it is left-aligned.</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<div>
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z2">
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+    <!-- Position Column -->
+    <ng-container matColumnDef="position">
+      <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+      <mat-cell *matCellDef="let element" [class.beige-background]="element.position % 2 == 0"> {{element.position}} </mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+      <mat-cell *matCellDef="let element" [class.beige-background]="element.position % 2 == 0"> {{element.name}} </mat-cell>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="weight">
+      <mat-header-cell *matHeaderCellDef> Weight </mat-header-cell>
+      <mat-cell *matCellDef="let element" [class.beige-background]="element.position % 2 == 0"> {{element.weight}} </mat-cell>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="symbol">
+      <mat-header-cell *matHeaderCellDef> Symbol </mat-header-cell>
+      <mat-cell *matCellDef="let element" [class.beige-background]="element.position % 2 == 0"> {{element.symbol}} </mat-cell>
+    </ng-container>
+
+  </mat-table>
+
+  <mat-paginator [pageSize]="4"></mat-paginator>
+</div>
