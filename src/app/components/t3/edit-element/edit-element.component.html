@@ -1,0 +1,33 @@
+<h1 mat-dialog-title>Add new element</h1>
+<div mat-dialog-content>
+  <form [formGroup]="myForm">
+    <mat-label>Name</mat-label><br>
+    <mat-form-field>
+      <input matInput type="text" formControlName="name" placeholder="Element name" required>
+    </mat-form-field>
+
+    <br><br>
+
+    <mat-label>Position</mat-label><br>
+    <mat-form-field>
+      <input matInput formControlName="position" placeholder="Element position" required>
+    </mat-form-field>
+
+    <br><br>
+    <mat-label>Weight</mat-label><br>
+    <mat-form-field>
+      <input matInput formControlName="weight" placeholder="Atom weight" required>
+    </mat-form-field>
+
+    <br><br>
+    <mat-label>Symbol</mat-label><br>
+    <mat-form-field>
+      <input matInput type="text" formControlName="symbol" placeholder="Element symbol" required>
+    </mat-form-field>
+  </form>
+
+  <br>
+
+  <button mat-raised-button color="accent" (click)="onNoClick()"><mat-icon>close</mat-icon></button> &nbsp;&nbsp;
+  <button mat-raised-button color="accent" [disabled]="!myForm.valid" [mat-dialog-close]="data"><mat-icon>done</mat-icon></button>
+</div>

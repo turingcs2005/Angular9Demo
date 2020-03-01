@@ -21,13 +21,13 @@
 <br><br>
 
 <div *ngIf="people$">
-  <div class="comment">Consumption via Observable and async pipe, which automatically takes care of unsubscription.</div>
+  <div class="comment">Here observable is consumed directly via async pipe by template. Async pipe automatically takes care of unsubscription.</div>
   {{ people$ | async | json}}
 </div>
 
 <br>
 
-<div *ngIf="people$" class="comment">Consumption via component property (people}, where Observable is subscribed to pass data to component property (people).</div>
+<div *ngIf="people$" class="comment">Here observable is subscribed so data are passed to component property. For http calls, unsubscription is generally not necessary.</div>
 <div *ngFor="let x of people; let i=index">
   {{i}}: {{x?.name}} <br>
   {{x?.greet()}} <br><br>

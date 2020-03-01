@@ -15,6 +15,7 @@ import { MaterialTableComponent } from './components/t2/material-table/material-
 import { HttpCallsComponent } from './components/t2/http-calls/http-calls.component';
 
 import { HttpClientModule } from '@angular/common/http';
+import { EditElementComponent } from './components/t3/edit-element/edit-element.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { HttpClientModule } from '@angular/common/http';
     HomeComponent,
     AboutComponent,
     MaterialTableComponent,
-    HttpCallsComponent
+    HttpCallsComponent,
+    EditElementComponent
   ],
   imports: [
     BrowserModule,

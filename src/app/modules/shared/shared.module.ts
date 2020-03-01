@@ -12,6 +12,8 @@ import {MatCardModule} from '@angular/material/card';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 // form modules
 import { ReactiveFormsModule } from '@angular/forms';
@@ -30,6 +32,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatPaginatorModule,
     MatSortModule,
     MatTableModule,
+    MatTooltipModule,
+    MatDialogModule,
     ReactiveFormsModule
   ],
   exports: [
@@ -43,6 +47,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatPaginatorModule,
     MatSortModule,
     MatTableModule,
+    MatDialogModule,
+    MatTooltipModule,
     ReactiveFormsModule
   ]
 })

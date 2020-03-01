@@ -1,26 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+
+// table and paginator
 import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTable } from '@angular/material/table';
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
+// dialog for pop-up form
+import { MatDialog} from '@angular/material/dialog';
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'}
-];
+import { PeriodicElement } from '../../../interfaces/periodic-element';
+import { HttpConfigService } from 'src/app/services/http-config.service';
+import { Observable } from 'rxjs';
+import { EditElementComponent } from '../../t3/edit-element/edit-element.component';
 
 @Component({
   selector: 'app-material-table',
@@ -30,16 +20,75 @@ const ELEMENT_DATA: PeriodicElement[] = [
 export class MaterialTableComponent implements OnInit {
 
   /* In Angular 9, ViewChild() takes a single argument (instead of 2 as in Angular 8) of either component type (MatPaginator)
-  or component name. The second argument, static, defaults to false, i.e. resolve after change detection. Set to true. */
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  or component name. The second argument, static, defaults to false, i.e. resolve after change detection.
+  Here we use ViewChild to access paginator, so it can be attached to MatTableDataSource. */
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  // @ViewChild(MatTable) table: MatTable<PeriodicElement>;
 
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'modify'];
+  periodicElements$: Observable<PeriodicElement[]>;
+  periodicElements: PeriodicElement[];
+  periodicElement: PeriodicElement;
 
-  constructor() { }
+  dataSource: MatTableDataSource<PeriodicElement>;
+
+  constructor(
+    private httpConfigService: HttpConfigService,
+    private changeDetectorRef: ChangeDetectorRef,
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
+   // get remote data
+    this.periodicElements$ = this.httpConfigService.getPeriodicElements();
+    this.periodicElements$.subscribe(
+      res => {
+        this.periodicElements = [];
+        for (const i of res) {
+          this.periodicElements.push(new PeriodicElement(i.name, i.position, i.weight, i.symbol));
+        }
+
+        this.refresh();
+
+        //  detect change in case source data are updated
+        this.changeDetectorRef.detectChanges();
+      }
+    );
+  }
+
+  //  Anytime table value changes, call this function to ensure that changes in data are reflected in table and paginator
+  refresh() {
+    this.dataSource = new MatTableDataSource<PeriodicElement>(this.periodicElements);
     this.dataSource.paginator = this.paginator;
+  }
+
+  deleteElement(i: PeriodicElement): void {
+    console.log(`${i.name} has been deleted.`);
+    this.periodicElements.splice(this.periodicElements.indexOf(i), 1);
+    this.refresh();
+  }
+
+  addElement(x: PeriodicElement): void {
+    console.log(`A new element has been added.`);
+    this.periodicElements.push(x);
+    this.refresh();
+  }
+
+  // pop up add element dialog box
+  addElementDialog(): void {
+    const dialogRef = this.dialog.open(EditElementComponent, {
+      height: '600px',
+      width: '400px',
+      data: {element: this.periodicElements}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed.');
+      this.periodicElement = result;
+      if (result) {
+        this.addElement(result);
+      }
+    });
   }
 
 }

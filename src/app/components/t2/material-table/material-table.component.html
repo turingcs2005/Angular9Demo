@@ -3,50 +3,72 @@
 <div class="comment">
   Material tables can be very fancy, with pagination, filtering and sorting utilities. Below are steps to implement pagination:
   <ul>
-    <li>Import MatPaginator and MatTableDataSource classes into component. Set [pageSize] in mat-paginator.</li>
+    <li>Import MatPaginator and MatTableDataSource classes into component. Set [pageSize] and [pageSizeOptions] in mat-paginator.</li>
     <li>Implement mat-table and mat-paginator in template.</li>
     <li>Link dataSource and paginator in component.
       <ul>
-        <li>Use ViewChild() to access mat-paginator. @ViewChild(MatPaginator, &#123;tatic: true&#125;) paginator: MatPaginator; Note that the second argument needs to be true.</li>
+        <li>Use ViewChild() to access mat-paginator. @ViewChild(MatPaginator) paginator: MatPaginator.</li>
         <li>Create a MatTableDataSource instance. (Standard HTML5 tables do not have paginator property.)</li>
-        <li>Assign paginator to table in onInit(): this.dataSource.paginator = this.paginator</li>
-        <li>In .scss, use &#123;display: flex&#125; on mat-paginator component, so it is left-aligned.</li>
+        <li>Assign paginator to table: this.dataSource.paginator = this.paginator. In .scss, use &#123;display: flex&#125; on mat-paginator component to left-align it.</li>
       </ul>
     </li>
+    <li>Each time data are modified (add, delete, edit), call a refresh() function to:
+      <ul>
+        <li>reassign MatTableDataSource to refresh underlying data and view.</li>
+        <li>reassign paginator to table, so paginator is refreshed with new table size.</li>
+      </ul>
+    </li>
+    <li>To access current item, e.g. for deletion, use indexOf(element) on your data array. <br>When using paginator,
+      index of your mat-cell returns index on current page, not index on your full list.<br>
+      <span class="comment-highlight">Deleting by index will delete items on previous page at the same location!</span>
+    </li>
+    <li>Loop through displayedColumns.slice(0, -1) (where -1 reserves the last column for things like deletion) so you don't have to repeat code for every data column.</li>
+    <li>Use Angular's ChangeDetectorRef while subscribing to source data, in case source data refreshes.</li>
+    <li>Use Angular's pop-up dialog to create a new component to add a new element.</li>
+    <li>In pop-up component, subscribe to FormGroup's valueChanges() method to assign FormControl values to component.</li>
+    <li>Pop-up component uses @Inject(MAT_DIALOG_DATA) public data: Type in component; uses [mat-dialog-close]="data" in template to pass data to parent component.</li>
   </ul>
 </div>
 
 <div>
+  <!-- add button -->
+  <button
+    mat-raised-button color="accent"
+    matTooltip="Add a new element"
+    (click)="addElementDialog()">
+    <mat-icon>add</mat-icon>
+  </button>
+  <br><br>
   <mat-table [dataSource]="dataSource" class="mat-elevation-z2">
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
 
-    <!-- Position Column -->
-    <ng-container matColumnDef="position">
-      <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
-      <mat-cell *matCellDef="let element" [class.beige-background]="element.position % 2 == 0"> {{element.position}} </mat-cell>
+    <!-- data columns -->
+    <ng-container *ngFor="let col of displayedColumns.slice(0, -1);" [matColumnDef]="col">
+      <mat-header-cell *matHeaderCellDef>{{col}}</mat-header-cell>
+      <mat-cell *matCellDef="let element; let i=index" [class.beige-background]="i % 2 == 0"> {{element[col]}} </mat-cell>
     </ng-container>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-      <mat-cell *matCellDef="let element" [class.beige-background]="element.position % 2 == 0"> {{element.name}} </mat-cell>
-    </ng-container>
+    <!-- edit/delete column -->
+    <ng-container matColumnDef="modify">
+      <mat-header-cell *matHeaderCellDef> edit/delete </mat-header-cell>
+      <mat-cell *matCellDef="let element; let i=index" [class.beige-background]="i % 2 == 0">
+        <!-- edit button -->
+        <button mat-raised-button color="accent">
+          <mat-icon>edit</mat-icon>
+        </button>
 
-    <!-- Weight Column -->
-    <ng-container matColumnDef="weight">
-      <mat-header-cell *matHeaderCellDef> Weight </mat-header-cell>
-      <mat-cell *matCellDef="let element" [class.beige-background]="element.position % 2 == 0"> {{element.weight}} </mat-cell>
-    </ng-container>
+        &nbsp;&nbsp;
 
-    <!-- Symbol Column -->
-    <ng-container matColumnDef="symbol">
-      <mat-header-cell *matHeaderCellDef> Symbol </mat-header-cell>
-      <mat-cell *matCellDef="let element" [class.beige-background]="element.position % 2 == 0"> {{element.symbol}} </mat-cell>
+        <!-- delete button -->
+        <button mat-raised-button color="accent" (click)="deleteElement(element)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-cell>
     </ng-container>
 
   </mat-table>
 
-  <mat-paginator [pageSize]="4"></mat-paginator>
+  <mat-paginator [pageSize]="4" [pageSizeOptions]="[2, 4, 5]"></mat-paginator>
 </div>

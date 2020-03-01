@@ -70,8 +70,17 @@
 
         <br>
 
-        <div class="mat-h1">Family members &nbsp;&nbsp; <button mat-raised-button color="accent" (click)="addFamilyMember()">Add family member</button></div>
+        <div class="mat-h1">
+          Family members &nbsp;&nbsp;
+          <button
+            mat-raised-button color="accent"
+            (click)="addFamilyMember()"
+            matTooltip="Add a family member">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
 
+        <!-- Loop through an array of FormGroup -->
         <div *ngFor="let x of familyMemberForms.controls; let i=index" [formGroupName]="i">
 
           <mat-form-field>
@@ -95,7 +104,8 @@
 
           &nbsp;&nbsp;
 
-          <button mat-raised-button color="accent" (click)="removeFamilyMember(i)">Remove family member</button>
+          <!-- Delete button. No need for edit button since we are dealing with forms, which can be edited. -->
+          <button mat-raised-button color="accent" (click)="removeFamilyMember(i)"><mat-icon>delete</mat-icon></button>
 
         </div>
 
