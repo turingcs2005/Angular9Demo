@@ -5,12 +5,19 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 
 // dialog for pop-up form
-import { MatDialog} from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
+// import types
 import { PeriodicElement } from '../../../interfaces/periodic-element';
+import { Operation } from '../../../interfaces/miscellaneous';
+
 import { HttpConfigService } from 'src/app/services/http-config.service';
 import { Observable } from 'rxjs';
-import { EditElementComponent } from '../../t3/edit-element/edit-element.component';
+import { ModElementComponent } from '../../t3/mod-element/mod-element.component';
+import { ConfirmDeleteComponent } from '../../t3/confirm-delete/confirm-delete.component';
+import { SnackBarComponent } from '../../t4/snack-bar/snack-bar.component';
+
 
 @Component({
   selector: 'app-material-table',
@@ -35,7 +42,8 @@ export class MaterialTableComponent implements OnInit {
   constructor(
     private httpConfigService: HttpConfigService,
     private changeDetectorRef: ChangeDetectorRef,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -56,7 +64,7 @@ export class MaterialTableComponent implements OnInit {
     );
   }
 
-  //  Anytime table value changes, call this function to ensure that changes in data are reflected in table and paginator
+  //  Anytime table changes (i.e. adding/deleting rows), call refresh() to ensure that changes are reflected in table and paginator
   refresh() {
     this.dataSource = new MatTableDataSource<PeriodicElement>(this.periodicElements);
     this.dataSource.paginator = this.paginator;
@@ -74,21 +82,81 @@ export class MaterialTableComponent implements OnInit {
     this.refresh();
   }
 
-  // pop up add element dialog box
-  addElementDialog(): void {
-    const dialogRef = this.dialog.open(EditElementComponent, {
-      height: '600px',
-      width: '400px',
-      data: {element: this.periodicElements}
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed.');
-      this.periodicElement = result;
-      if (result) {
-        this.addElement(result);
-      }
-    });
+  updateElement(target: PeriodicElement, source: PeriodicElement): void {
+    // Object.assign() copies only own (not parent class) enumerable properties. */
+    Object.assign(target, source);
   }
 
+  openDialog(operation: Operation, x: PeriodicElement = new PeriodicElement()) {
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;  // user click outside of dialog won't close the dialog box.
+    dialogConfig.autoFocus = true;     // auto focus on the first form field
+    dialogConfig.height = '600px';
+    dialogConfig.width = '400px';
+
+    // default to true, i.e. navigating to another route in our single page application closes the dialog. Set to false.
+    dialogConfig.closeOnNavigation = false;
+
+    /* Pass data to dialog. first property indicates type of operation (add vs. edit); second property passes an element.
+       For add operation, an empty PeriodicElement is passed since adding new element doesn't need an existing one;
+       For edit operation, the current PeriodicElement is passed to be edited and updated. */
+    dialogConfig.data = {
+      op: operation,
+      element: x  // for add operation, we don't need x so it takes default value (empty PeriodicElement)
+    };
+
+    //  create a reference to dialog component
+    const dialogRef = this.dialog.open(ModElementComponent, dialogConfig);
+
+    // subscribe to observable returned by dialog
+    dialogRef.afterClosed().subscribe(
+      data => {
+        console.log('The modify-element dialog was closed.');
+        if (data) {  // if dialog component didn't return empty object
+          if (data.op === Operation.Edit) {
+            this.updateElement(x, data.element);
+          } else if (data.op === Operation.Add) {
+            this.addElement(data.element);
+          } else {
+            console.log('This component performs only add and edit. This should not happen');
+          }
+        }
+      }
+    );
+  }
+
+  openDialog2(x: PeriodicElement) {
+    this.openSnackBar();  // send warning that an element is about to be deleted.
+    const dialogConfig2 = new MatDialogConfig();
+
+    dialogConfig2.disableClose = true;  // user click outside of dialog won't close the dialog box.
+    dialogConfig2.autoFocus = true;     // auto focus on the first form field
+    dialogConfig2.height = '200px';
+    dialogConfig2.width = '400px';
+
+    dialogConfig2.data = x;
+
+    // default to true, i.e. navigating to another route in our single page application closes the dialog. Set to false.
+    dialogConfig2.closeOnNavigation = false;
+
+    //  create a reference to dialog component
+    const dialogRef2 = this.dialog.open(ConfirmDeleteComponent, dialogConfig2);
+
+    // subscribe to observable returned by dialog
+    dialogRef2.afterClosed().subscribe(
+      data => {
+        if (data) {
+          this.deleteElement(x);
+        }
+      }
+    );
+  }
+
+  openSnackBar() {
+    this.snackBar.openFromComponent(SnackBarComponent, {
+      duration: 5000  // 5 seconds duration for snackbar
+    });
+  }
 }

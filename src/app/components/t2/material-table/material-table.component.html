@@ -23,10 +23,15 @@
       <span class="comment-highlight">Deleting by index will delete items on previous page at the same location!</span>
     </li>
     <li>Loop through displayedColumns.slice(0, -1) (where -1 reserves the last column for things like deletion) so you don't have to repeat code for every data column.</li>
-    <li>Use Angular's ChangeDetectorRef while subscribing to source data, in case source data refreshes.</li>
-    <li>Use Angular's pop-up dialog to create a new component to add a new element.</li>
-    <li>In pop-up component, subscribe to FormGroup's valueChanges() method to assign FormControl values to component.</li>
-    <li>Pop-up component uses @Inject(MAT_DIALOG_DATA) public data: Type in component; uses [mat-dialog-close]="data" in template to pass data to parent component.</li>
+    <li>Use Angular Material's pop-up dialog to create a new component to add or edit a new element.
+      <ul>
+        <li>Pop-up component accept data from parent component via @Inject(MAT_DIALOG_DATA) public data: Type</li>
+        <li>Pop-up component can be configured (height, width, position, behavior, data passed, etc.) in parent component via a MatDialogConfig object.</li>
+        <li>Pop-up component can pass data back to parent component via a MatDialogRef object that points to itself. MatDialogRef.close(value) passes value to parent component.</li>
+        <li>A single pop-up component can handle both adding and editing, because operation type (add vs. edit) can be passed from parent component to dialog component, and then back.</li>
+      </ul>
+    </li>
+    <li>Use Angular Material's snackbar to create warning (for a limited duration, e.g. 5 seconds) at the bottom when deleting an element.</li>
   </ul>
 </div>
 
@@ -35,7 +40,7 @@
   <button
     mat-raised-button color="accent"
     matTooltip="Add a new element"
-    (click)="addElementDialog()">
+    (click)="openDialog(0)">
     <mat-icon>add</mat-icon>
   </button>
   <br><br>
@@ -55,14 +60,14 @@
       <mat-header-cell *matHeaderCellDef> edit/delete </mat-header-cell>
       <mat-cell *matCellDef="let element; let i=index" [class.beige-background]="i % 2 == 0">
         <!-- edit button -->
-        <button mat-raised-button color="accent">
+        <button mat-raised-button color="accent" (click)="openDialog(1, element)">
           <mat-icon>edit</mat-icon>
         </button>
 
         &nbsp;&nbsp;
 
         <!-- delete button -->
-        <button mat-raised-button color="accent" (click)="deleteElement(element)">
+        <button mat-raised-button color="accent" (click)="openDialog2(element)">
           <mat-icon>delete</mat-icon>
         </button>
       </mat-cell>

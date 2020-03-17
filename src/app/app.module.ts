@@ -15,7 +15,9 @@ import { MaterialTableComponent } from './components/t2/material-table/material-
 import { HttpCallsComponent } from './components/t2/http-calls/http-calls.component';
 
 import { HttpClientModule } from '@angular/common/http';
-import { EditElementComponent } from './components/t3/edit-element/edit-element.component';
+import { ModElementComponent } from './components/t3/mod-element/mod-element.component';
+import { ConfirmDeleteComponent } from './components/t3/confirm-delete/confirm-delete.component';
+import { SnackBarComponent } from './components/t4/snack-bar/snack-bar.component';
 
 
 @NgModule({
@@ -26,7 +28,9 @@ import { EditElementComponent } from './components/t3/edit-element/edit-element.
     AboutComponent,
     MaterialTableComponent,
     HttpCallsComponent,
-    EditElementComponent
+    ModElementComponent,
+    ConfirmDeleteComponent,
+    SnackBarComponent
   ],
   imports: [
     BrowserModule,
@@ -38,5 +42,8 @@ import { EditElementComponent } from './components/t3/edit-element/edit-element.
   ],
   providers: [],
   bootstrap: [AppComponent]
+
+  // entryComponents are generated dynamically. Somehow this isn't needed in Angular 9.
+  // entryComponents: [ModElementComponent]
 })
 export class AppModule { }

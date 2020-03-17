@@ -8,7 +8,6 @@ import { ArrayFormsComponent } from './modules/demo-forms/array-forms/array-form
 import { FormValidationComponent } from './modules/demo-forms/form-validation/form-validation.component';
 import { MaterialTableComponent } from './components/t2/material-table/material-table.component';
 import { HttpCallsComponent } from './components/t2/http-calls/http-calls.component';
-import { EditElementComponent } from './components/t3/edit-element/edit-element.component';
 
 
 const routes: Routes = [

@@ -14,6 +14,7 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 // form modules
 import { ReactiveFormsModule } from '@angular/forms';
@@ -34,6 +35,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatTableModule,
     MatTooltipModule,
     MatDialogModule,
+    MatSnackBarModule,
     ReactiveFormsModule
   ],
   exports: [
@@ -49,6 +51,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatTableModule,
     MatDialogModule,
     MatTooltipModule,
+    MatSnackBarModule,
     ReactiveFormsModule
   ]
 })

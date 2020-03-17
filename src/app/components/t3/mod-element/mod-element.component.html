@@ -1,5 +1,7 @@
-<h1 mat-dialog-title>Add new element</h1>
-<div mat-dialog-content>
+<h1 mat-dialog-title>{{operationType}} element</h1>
+<!-- This single component takes care of both adding new element and editing existing element -->
+
+<mat-dialog-content [formGroup]="myForm">
   <form [formGroup]="myForm">
     <mat-label>Name</mat-label><br>
     <mat-form-field>
@@ -25,9 +27,10 @@
       <input matInput type="text" formControlName="symbol" placeholder="Element symbol" required>
     </mat-form-field>
   </form>
+</mat-dialog-content>
 
-  <br>
-
-  <button mat-raised-button color="accent" (click)="onNoClick()"><mat-icon>close</mat-icon></button> &nbsp;&nbsp;
-  <button mat-raised-button color="accent" [disabled]="!myForm.valid" [mat-dialog-close]="data"><mat-icon>done</mat-icon></button>
-</div>
+<!-- Action buttons at the bottom of the dialog -->
+<mat-dialog-actions>
+  <button mat-raised-button color="accent" (click)="close()"><mat-icon>close</mat-icon></button>
+  <button mat-raised-button color="accent" (click)="save()"><mat-icon>done</mat-icon></button>
+</mat-dialog-actions>
